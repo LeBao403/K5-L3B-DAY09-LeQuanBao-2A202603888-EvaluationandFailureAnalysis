@@ -21,7 +21,9 @@ ITEMS_V2 = Path("data/eval/eval_set_v2.jsonl")
 LABELS_V2 = Path("data/eval/labels_v2.json")
 PACK = Path("data/eval/adversarial_v2.json")
 FM_MAP = Path("config/fm_map.yaml")
-MIN_PER_MODE_V2 = 3   # v2 rule: a failure mode with < 3 items cannot show a trend, only an anecdote
+# Eval-set files are written with LF on every OS: eval_set_sha hashes bytes and CI runs on Linux.
+LF = "\n"
+MIN_PER_MODE_V2 = 3  # v2 rule: a failure mode with < 3 items cannot show a trend, only an anecdote
 # Fields an item must carry. Labels never go inline: a grader that can read the
 # answer next to the input is a grader that can be fooled by it.
 REQUIRED = ("item_id", "claim_id", "failure_modes", "provenance", "split", "eval_set_version")
@@ -74,8 +76,8 @@ def build(source: Path = SOURCE) -> tuple[int, int]:
         })
         labels[claim["claim_id"]] = claim["expected"]
     ITEMS.parent.mkdir(parents=True, exist_ok=True)
-    ITEMS.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8")
-    LABELS.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8")
+    ITEMS.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8", newline=LF)
+    LABELS.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8", newline=LF)
     return len(items), len(labels)
 
 
@@ -116,8 +118,8 @@ def build_v2(items_v1: Path = ITEMS, labels_v1: Path = LABELS, pack: Path = PACK
             "slices": slices_for(claim["expected"], True),
         })
         labels[claim["claim_id"]] = claim["expected"]
-    ITEMS_V2.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8")
-    LABELS_V2.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8")
+    ITEMS_V2.write_text("".join(json.dumps(i, ensure_ascii=False) + "\n" for i in items), encoding="utf-8", newline=LF)
+    LABELS_V2.write_text(json.dumps(labels, ensure_ascii=False, indent=2), encoding="utf-8", newline=LF)
     return len(items), len(labels)
 
 

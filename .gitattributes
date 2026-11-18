@@ -1,0 +1,4 @@
+# Eval sets are hashed byte-for-byte (manifest.eval_set_sha) and CI runs on Linux:
+# store and check out these files exactly as written (LF), never convert line endings.
+src/data/eval/*.jsonl -text
+src/data/eval/labels_*.json -text
